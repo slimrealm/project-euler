@@ -1178,6 +1178,73 @@ const checkTwoPairs = (round) => {
   return 'next';
 };
 
+const checkThreeOfAKind = (round) => {
+  let p1CardValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 2,3,4....Q,K,A
+  let p2CardValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 2,3,4....Q,K,A
+  let p1_3KindVal = 0;
+  let p2_3KindVal = 0;
+  let p1k1 = 0;
+  let p1k2 = 0;
+  let p2k1 = 0;
+  let p2k2 = 0;
+
+  // do algorithm
+  p1CardValues[round.p1Cards.c1.val - 2]++;
+  p1CardValues[round.p1Cards.c2.val - 2]++;
+  p1CardValues[round.p1Cards.c3.val - 2]++;
+  p1CardValues[round.p1Cards.c4.val - 2]++;
+  p1CardValues[round.p1Cards.c5.val - 2]++;
+
+  p2CardValues[round.p2Cards.c1.val - 2]++;
+  p2CardValues[round.p2Cards.c2.val - 2]++;
+  p2CardValues[round.p2Cards.c3.val - 2]++;
+  p2CardValues[round.p2Cards.c4.val - 2]++;
+  p2CardValues[round.p2Cards.c5.val - 2]++;
+
+  //console.log(p1CardValues);
+  //console.log(p2CardValues);
+
+  for (let i = 0; i <= 12; i++) {
+    if (p1CardValues[i] === 3) {
+      p1_3KindVal = i + 2;
+    }
+    if (p2CardValues[i] === 3) {
+      p2_3KindVal = i + 2;
+    }
+    if (p1CardValues[i] === 2) {
+      p1k1 = i + 2;
+      p1k2 = i + 2;
+    }
+    if (p2CardValues[i] === 2) {
+      p2k1 = i + 2;
+      p2k2 = i + 2;
+    }
+    if (p1CardValues[i] === 1) {
+      if (p1k1 === 0) p1k1 = i + 2;
+      else p1k2 = i + 2;
+    }
+    if (p2CardValues[i] === 1) {
+      if (p2k1 === 0) p2k1 = i + 2;
+      else p2k2 = i + 2;
+    }
+  }
+
+  if (p1_3KindVal > p2_3KindVal) return 'p1';
+  if (p2_3KindVal > p1_3KindVal) return 'p2';
+  if (p1_3KindVal === p2_3KindVal && p1_3KindVal !== 0) {
+    p1kHigh = Math.max(p1k1, p1k2);
+    p1kLow = Math.min(p1k1, p1k2);
+    p2kHigh = Math.max(p2k1, p2k2);
+    p2kLow = Math.min(p2k1, p2k2);
+    if (p1kHigh > p2kHigh) return 'p1';
+    if (p2kHigh > p1kHigh) return 'p2';
+    if (p1kLow > p2kLow) return 'p1';
+    if (p2kLow > p1kLow) return 'p2';
+  }
+
+  return 'next';
+};
+
 const checkWinType = (winType, round) => {
   let winner = 'next';
 
@@ -1187,7 +1254,7 @@ const checkWinType = (winType, round) => {
   //if (winType === 'fullHouse') winner = checkFullHouse(round);
   //if (winType === 'flush') winner = checkFlush(round);
   //if (winType === 'straight') winner = checkStraight(round);
-  //if (winType === 'threeOfAKind') winner = checkThreeOfAKind(round);
+  if (winType === 'threeOfAKind') winner = checkThreeOfAKind(round);
   if (winType === 'twoPairs') winner = checkTwoPairs(round);
   if (winType === 'onePair') winner = checkOnePair(round);
   if (winType === 'highCard') winner = checkHighCard(round);
@@ -1220,3 +1287,4 @@ exports.determineWin = determineWin;
 exports.checkOnePair = checkOnePair;
 exports.checkTwoPairs = checkTwoPairs;
 exports.checkHighCard = checkHighCard;
+exports.checkThreeOfAKind = checkThreeOfAKind;

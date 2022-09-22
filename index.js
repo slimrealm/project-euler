@@ -5,6 +5,7 @@ const {
   checkOnePair,
   checkTwoPairs,
   checkHighCard,
+  checkThreeOfAKind,
 } = require('./problem-0054/functions_0054');
 
 const checkRoyalFlush = (parsedHand) => {
@@ -15,7 +16,7 @@ let p1_wins = 0;
 let p2_wins = 0;
 
 const allRawHands = syncReadFile('./problem-0054/p054_poker.txt');
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i <= 999; i++) {
   // for (rawHand of allRawHands) {
   const round = parseHandsForRound(allRawHands[i] /*rawHand*/);
   //console.log(round);
@@ -33,20 +34,20 @@ console.log('\n\nTESTS');
 
 testRound = {
   p1Cards: {
-    c1: { val: 8, suit: 'C' },
+    c1: { val: 6, suit: 'C' },
     c2: { val: 8, suit: 'S' },
-    c3: { val: 13, suit: 'D' },
-    c4: { val: 13, suit: 'C' },
-    c5: { val: 5, suit: 'H' },
+    c3: { val: 3, suit: 'D' },
+    c4: { val: 3, suit: 'C' },
+    c5: { val: 3, suit: 'H' },
   },
   p2Cards: {
-    c1: { val: 8, suit: 'H' },
-    c2: { val: 8, suit: 'C' },
-    c3: { val: 6, suit: 'D' },
-    c4: { val: 13, suit: 'S' },
-    c5: { val: 13, suit: 'C' },
+    c1: { val: 2, suit: 'H' },
+    c2: { val: 2, suit: 'C' },
+    c3: { val: 2, suit: 'D' },
+    c4: { val: 12, suit: 'S' },
+    c5: { val: 12, suit: 'C' },
   },
 };
 
-const testWinner = checkTwoPairs(testRound);
+const testWinner = checkThreeOfAKind(testRound);
 console.log(testWinner);
