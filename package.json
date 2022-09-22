@@ -1,0 +1,22 @@
+{
+  "name": "project-euler",
+  "version": "1.0.0",
+  "description": "Problems from Project Euler",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slimrealm/project-euler.git"
+  },
+  "author": "Sam Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/slimrealm/project-euler/issues"
+  },
+  "homepage": "https://github.com/slimrealm/project-euler#readme",
+  "dependencies": {
+    "fs-extra": "^10.1.0"
+  }
+}

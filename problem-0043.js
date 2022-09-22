@@ -54,15 +54,66 @@ function heapPermutation(a, size, n) {
   }
 }
 
+const checkDivisibility = (str) => {
+  let meetsCriteria = true;
+  let subNumberToCheck = Number(str.substr(1, 3));
+  if (subNumberToCheck % 2 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(2, 3));
+  if (subNumberToCheck % 3 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(3, 3));
+  //console.log(str); // TEMP
+  //console.log(Number(str.substr(3, 3))); // TEMP
+  if (subNumberToCheck % 5 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(4, 3));
+  if (subNumberToCheck % 7 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(5, 3));
+  if (subNumberToCheck % 11 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(6, 3));
+  if (subNumberToCheck % 13 !== 0) {
+    meetsCriteria = false;
+  }
+  subNumberToCheck = Number(str.substr(7, 3));
+  if (subNumberToCheck % 17 !== 0) {
+    meetsCriteria = false;
+  }
+  return meetsCriteria;
+};
+
 // Driver code
 const INCLUDE_STARTING_ZERO = true;
 let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 let allValidPermutationsStrings = [];
+let finalStrings = [];
 heapPermutation(a, a.length, a.length);
-//console.log(allValidPermutationsStrings);
+console.log(allValidPermutationsStrings);
 
 // TODO: TRY ALGO WITH AND WITHOUT LEADING ZEROS
-// for each permutation
+
+for (str of allValidPermutationsStrings) {
+  const meetsCriteria = checkDivisibility(str);
+  if (meetsCriteria) {
+    finalStrings.push(str);
+  }
+}
+
+console.log(finalStrings);
+
+let finalSum = 0;
+for (str of finalStrings) {
+  finalSum += Number(str);
+}
+console.log(`Final sum: ${finalSum}`);
+
 // isolate d2d3d4 -- check if divisible by 2
 // if so, isolate d3d4d5 -- check if divisible by 3
 // and so on......
