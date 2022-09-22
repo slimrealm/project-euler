@@ -2,6 +2,9 @@ const {
   parseHandsForRound,
   syncReadFile,
   determineWin,
+  checkOnePair,
+  checkTwoPairs,
+  checkHighCard,
 } = require('./problem-0054/functions_0054');
 
 const checkRoyalFlush = (parsedHand) => {
@@ -24,3 +27,26 @@ for (let i = 0; i < 18; i++) {
 
 console.log('p1_wins: ', p1_wins);
 console.log('p2_wins: ', p2_wins);
+
+// TESTS
+console.log('\n\nTESTS');
+
+testRound = {
+  p1Cards: {
+    c1: { val: 8, suit: 'C' },
+    c2: { val: 8, suit: 'S' },
+    c3: { val: 13, suit: 'D' },
+    c4: { val: 13, suit: 'C' },
+    c5: { val: 5, suit: 'H' },
+  },
+  p2Cards: {
+    c1: { val: 8, suit: 'H' },
+    c2: { val: 8, suit: 'C' },
+    c3: { val: 6, suit: 'D' },
+    c4: { val: 13, suit: 'S' },
+    c5: { val: 13, suit: 'C' },
+  },
+};
+
+const testWinner = checkTwoPairs(testRound);
+console.log(testWinner);

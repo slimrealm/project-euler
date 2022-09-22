@@ -1,3 +1,4 @@
+const { createDecipheriv } = require('crypto');
 const { readFileSync, promises: fsPromises } = require('fs');
 
 const mapVal = (char) => {
@@ -100,50 +101,1079 @@ const checkOnePair = (round) => {
   let p1_pair_val = 0;
   let p2_pair_val = 0;
 
-  if (round.p1Cards.c1.val == round.p1Cards.c2.val)
+  let p1x1;
+  let p1x2;
+  let p1x3;
+  let p2x1;
+  let p2x2;
+  let p2x3;
+
+  if (round.p1Cards.c1.val === round.p1Cards.c2.val) {
     p1_pair_val = round.p1Cards.c1.val;
-  if (round.p1Cards.c1.val == round.p1Cards.c3.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c3;
+    p1x2 = round.p1Cards.c4;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c3.val) {
     p1_pair_val = round.p1Cards.c1.val;
-  if (round.p1Cards.c1.val == round.p1Cards.c4.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c2;
+    p1x2 = round.p1Cards.c4;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c4.val) {
     p1_pair_val = round.p1Cards.c1.val;
-  if (round.p1Cards.c1.val == round.p1Cards.c5.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c2;
+    p1x2 = round.p1Cards.c3;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c5.val) {
     p1_pair_val = round.p1Cards.c1.val;
-  if (round.p1Cards.c2.val == round.p1Cards.c3.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c2;
+    p1x2 = round.p1Cards.c3;
+    p1x3 = round.p1Cards.c4;
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c3.val) {
     p1_pair_val = round.p1Cards.c2.val;
-  if (round.p1Cards.c2.val == round.p1Cards.c4.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c4;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c4.val) {
     p1_pair_val = round.p1Cards.c2.val;
-  if (round.p1Cards.c2.val == round.p1Cards.c5.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c3;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c5.val) {
     p1_pair_val = round.p1Cards.c2.val;
-  if (round.p1Cards.c3.val == round.p1Cards.c4.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c3;
+    p1x3 = round.p1Cards.c4;
+  }
+  if (round.p1Cards.c3.val === round.p1Cards.c4.val) {
     p1_pair_val = round.p1Cards.c3.val;
-  if (round.p1Cards.c3.val == round.p1Cards.c5.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c2;
+    p1x3 = round.p1Cards.c5;
+  }
+  if (round.p1Cards.c3.val === round.p1Cards.c5.val) {
     p1_pair_val = round.p1Cards.c3.val;
-  if (round.p1Cards.c4.val == round.p1Cards.c5.val)
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c2;
+    p1x3 = round.p1Cards.c4;
+  }
+  if (round.p1Cards.c4.val === round.p1Cards.c5.val) {
     p1_pair_val = round.p1Cards.c4.val;
+    p1_pair = true;
+    p1x1 = round.p1Cards.c1;
+    p1x2 = round.p1Cards.c2;
+    p1x3 = round.p1Cards.c3;
+  }
 
-  if (round.p2Cards.c1.val == round.p2Cards.c2.val)
+  if (round.p2Cards.c1.val === round.p2Cards.c2.val) {
     p2_pair_val = round.p2Cards.c1.val;
-  if (round.p2Cards.c1.val == round.p2Cards.c3.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c3;
+    p2x2 = round.p2Cards.c4;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c3.val) {
     p2_pair_val = round.p2Cards.c1.val;
-  if (round.p2Cards.c1.val == round.p2Cards.c4.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c2;
+    p2x2 = round.p2Cards.c4;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c4.val) {
     p2_pair_val = round.p2Cards.c1.val;
-  if (round.p2Cards.c1.val == round.p2Cards.c5.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c2;
+    p2x2 = round.p2Cards.c3;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c5.val) {
     p2_pair_val = round.p2Cards.c1.val;
-  if (round.p2Cards.c2.val == round.p2Cards.c3.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c2;
+    p2x2 = round.p2Cards.c3;
+    p2x3 = round.p2Cards.c4;
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c3.val) {
     p2_pair_val = round.p2Cards.c2.val;
-  if (round.p2Cards.c2.val == round.p2Cards.c4.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c4;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c4.val) {
     p2_pair_val = round.p2Cards.c2.val;
-  if (round.p2Cards.c2.val == round.p2Cards.c5.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c3;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c5.val) {
     p2_pair_val = round.p2Cards.c2.val;
-  if (round.p2Cards.c3.val == round.p2Cards.c4.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c3;
+    p2x3 = round.p2Cards.c4;
+  }
+  if (round.p2Cards.c3.val === round.p2Cards.c4.val) {
     p2_pair_val = round.p2Cards.c3.val;
-  if (round.p2Cards.c3.val == round.p2Cards.c5.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c2;
+    p2x3 = round.p2Cards.c5;
+  }
+  if (round.p2Cards.c3.val === round.p2Cards.c5.val) {
     p2_pair_val = round.p2Cards.c3.val;
-  if (round.p2Cards.c4.val == round.p2Cards.c5.val)
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c2;
+    p2x3 = round.p2Cards.c4;
+  }
+  if (round.p2Cards.c4.val === round.p2Cards.c5.val) {
     p2_pair_val = round.p2Cards.c4.val;
+    p2_pair = true;
+    p2x1 = round.p2Cards.c1;
+    p2x2 = round.p2Cards.c2;
+    p2x3 = round.p2Cards.c3;
+  }
 
-  if (p1_pair_val > p2_pair_val) return 'p1';
-  if (p2_pair_val > p1_pair_val) return 'p2';
+  if (p1_pair || p2_pair) {
+    if (p1_pair_val > p2_pair_val) return 'p1';
+    if (p2_pair_val > p1_pair_val) return 'p2';
+    if (p1_pair_val === p2_pair_val) {
+      let p1xCards = [p1x1.val, p1x2.val, p1x3.val];
+      p1xCards.sort((a, b) => {
+        return a - b;
+      });
+      console.log(p1xCards);
+      let p2xCards = [p2x1.val, p2x2.val, p2x3.val];
+      p2xCards.sort((a, b) => {
+        return a - b;
+      });
+      console.log(p2xCards);
+      if (p1xCards[2] > p2xCards[2]) return 'p1';
+      if (p2xCards[2] > p1xCards[2]) return 'p2';
+      if (p1xCards[1] > p2xCards[1]) return 'p1';
+      if (p2xCards[1] > p1xCards[1]) return 'p2';
+      if (p1xCards[0] > p2xCards[0]) return 'p1';
+      if (p2xCards[0] > p1xCards[0]) return 'p2';
+    }
+  }
+
+  return 'next';
+};
+
+const checkTwoPairs = (round) => {
+  let p1_pair = 0;
+  let p2_pair = 0;
+  let p1_pair_high = 0; // should remove
+  let p2_pair_high = 0; // should remove
+  let p1_kicker;
+  let p2_kicker;
+
+  let p1_pair_found_1; // i.e. {c1, c2} <-- Ace
+  let p1_pair_found_2; // i.e. {c1, c2} <-- Ace
+  let p1_pair_found_3; // i.e. {c1, c2} <-- Ace
+  let p1_pair_found_4; // i.e. {c1, c2} <-- Ace
+  let p2_pair_found_1; // i.e. {c1, c2} <-- Ace
+  let p2_pair_found_2; // i.e. {c1, c2} <-- Ace
+  let p2_pair_found_3; // i.e. {c1, c2} <-- Ace
+  let p2_pair_found_4; // i.e. {c1, c2} <-- Ace
+
+  if (round.p1Cards.c1.val === round.p1Cards.c2.val) {
+    p1_pair++;
+    if (round.p1Cards.c1.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c1.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c1;
+      p1_pair_found_2 = round.p1Cards.c2;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c1;
+      p1_pair_found_4 = round.p1Cards.c2;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c3.val) {
+    p1_pair++;
+    if (round.p1Cards.c1.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c1.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c1;
+      p1_pair_found_2 = round.p1Cards.c3;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c1;
+      p1_pair_found_4 = round.p1Cards.c3;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c4.val) {
+    p1_pair++;
+    if (round.p1Cards.c1.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c1.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c1;
+      p1_pair_found_2 = round.p1Cards.c4;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c1;
+      p1_pair_found_4 = round.p1Cards.c4;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c1.val === round.p1Cards.c5.val) {
+    p1_pair++;
+    if (round.p1Cards.c1.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c1.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c1;
+      p1_pair_found_2 = round.p1Cards.c5;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c1;
+      p1_pair_found_4 = round.p1Cards.c5;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c3.val) {
+    p1_pair++;
+    if (round.p1Cards.c2.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c2.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c2;
+      p1_pair_found_2 = round.p1Cards.c3;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c2;
+      p1_pair_found_4 = round.p1Cards.c3;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c4.val) {
+    p1_pair++;
+    if (round.p1Cards.c2.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c2.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c2;
+      p1_pair_found_2 = round.p1Cards.c4;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c2;
+      p1_pair_found_4 = round.p1Cards.c4;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c2.val === round.p1Cards.c5.val) {
+    p1_pair++;
+    if (round.p1Cards.c2.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c2.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c2;
+      p1_pair_found_2 = round.p1Cards.c5;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c2;
+      p1_pair_found_4 = round.p1Cards.c5;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c3.val === round.p1Cards.c4.val) {
+    p1_pair++;
+    if (round.p1Cards.c3.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c3.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c3;
+      p1_pair_found_2 = round.p1Cards.c4;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c3;
+      p1_pair_found_4 = round.p1Cards.c4;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c5;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c3.val === round.p1Cards.c5.val) {
+    p1_pair++;
+    if (round.p1Cards.c3.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c3.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c3;
+      p1_pair_found_2 = round.p1Cards.c5;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c3;
+      p1_pair_found_4 = round.p1Cards.c5;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c4;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p1Cards.c4.val === round.p1Cards.c5.val) {
+    p1_pair++;
+    if (round.p1Cards.c4.val > p1_pair_high) {
+      p1_pair_high = round.p1Cards.c4.val;
+    }
+    if (!p1_pair_found_1 && !p1_pair_found_2) {
+      p1_pair_found_1 = round.p1Cards.c4;
+      p1_pair_found_2 = round.p1Cards.c5;
+    } else {
+      p1_pair_found_3 = round.p1Cards.c4;
+      p1_pair_found_4 = round.p1Cards.c5;
+    }
+    if (p1_pair_found_4) {
+      let kickerMaybe = round.p1Cards.c1;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c2;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p1Cards.c3;
+      if (
+        kickerMaybe !== p1_pair_found_1 &&
+        kickerMaybe !== p1_pair_found_2 &&
+        kickerMaybe !== p1_pair_found_3 &&
+        kickerMaybe !== p1_pair_found_4
+      ) {
+        p1_kicker = kickerMaybe;
+      }
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  if (round.p2Cards.c1.val === round.p2Cards.c2.val) {
+    p2_pair++;
+    if (round.p2Cards.c1.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c1.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c1;
+      p2_pair_found_2 = round.p2Cards.c2;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c1;
+      p2_pair_found_4 = round.p2Cards.c2;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c3.val) {
+    p2_pair++;
+    if (round.p2Cards.c1.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c1.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c1;
+      p2_pair_found_2 = round.p2Cards.c3;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c1;
+      p2_pair_found_4 = round.p2Cards.c3;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c4.val) {
+    p2_pair++;
+    if (round.p2Cards.c1.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c1.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c1;
+      p2_pair_found_2 = round.p2Cards.c4;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c1;
+      p2_pair_found_4 = round.p2Cards.c4;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c1.val === round.p2Cards.c5.val) {
+    p2_pair++;
+    if (round.p2Cards.c1.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c1.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c1;
+      p2_pair_found_2 = round.p2Cards.c5;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c1;
+      p2_pair_found_4 = round.p2Cards.c5;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c3.val) {
+    p2_pair++;
+    if (round.p2Cards.c2.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c2.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c2;
+      p2_pair_found_2 = round.p2Cards.c3;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c2;
+      p2_pair_found_4 = round.p2Cards.c3;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c4.val) {
+    p2_pair++;
+    if (round.p2Cards.c2.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c2.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c2;
+      p2_pair_found_2 = round.p2Cards.c4;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c2;
+      p2_pair_found_4 = round.p2Cards.c4;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c2.val === round.p2Cards.c5.val) {
+    p2_pair++;
+    if (round.p2Cards.c2.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c2.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c2;
+      p2_pair_found_2 = round.p2Cards.c5;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c2;
+      p2_pair_found_4 = round.p2Cards.c5;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c3.val === round.p2Cards.c4.val) {
+    p2_pair++;
+    if (round.p2Cards.c3.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c3.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c3;
+      p2_pair_found_2 = round.p2Cards.c4;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c3;
+      p2_pair_found_4 = round.p2Cards.c4;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c5;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c3.val === round.p2Cards.c5.val) {
+    p2_pair++;
+    if (round.p2Cards.c3.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c3.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c3;
+      p2_pair_found_2 = round.p2Cards.c5;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c3;
+      p2_pair_found_4 = round.p2Cards.c5;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c4;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+  if (round.p2Cards.c4.val === round.p2Cards.c5.val) {
+    p2_pair++;
+    if (round.p2Cards.c4.val > p2_pair_high) {
+      p2_pair_high = round.p2Cards.c4.val;
+    }
+    if (!p2_pair_found_1 && !p2_pair_found_2) {
+      p2_pair_found_1 = round.p2Cards.c4;
+      p2_pair_found_2 = round.p2Cards.c5;
+    } else {
+      p2_pair_found_3 = round.p2Cards.c4;
+      p2_pair_found_4 = round.p2Cards.c5;
+    }
+    if (p2_pair_found_4) {
+      let kickerMaybe = round.p2Cards.c1;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c2;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+      kickerMaybe = round.p2Cards.c3;
+      if (
+        kickerMaybe !== p2_pair_found_1 &&
+        kickerMaybe !== p2_pair_found_2 &&
+        kickerMaybe !== p2_pair_found_3 &&
+        kickerMaybe !== p2_pair_found_4
+      ) {
+        p2_kicker = kickerMaybe;
+      }
+    }
+  }
+
+  if (p1_pair === 2 && p2_pair < 2) return 'p1';
+  if (p2_pair === 2 && p1_pair < 2) return 'p2';
+  if (p1_pair === 2 && p2_pair === 2) {
+    let p1CardArray = [
+      p1_pair_found_1.val,
+      p1_pair_found_2.val,
+      p1_pair_found_3.val,
+      p1_pair_found_4.val,
+    ];
+    p1CardArray.sort((a, b) => {
+      return a - b;
+    });
+
+    let p2CardArray = [
+      p2_pair_found_1.val,
+      p2_pair_found_2.val,
+      p2_pair_found_3.val,
+      p2_pair_found_4.val,
+    ];
+    p2CardArray.sort((a, b) => {
+      return a - b;
+    });
+
+    if (p1CardArray[3] > p2CardArray[3]) return 'p1';
+    if (p2CardArray[3] > p1CardArray[3]) return 'p2';
+    if (p1CardArray[1] > p2CardArray[1]) return 'p1';
+    if (p2CardArray[1] > p1CardArray[1]) return 'p2';
+
+    if (
+      p1CardArray[3] === p2CardArray[3] &&
+      p1CardArray[1] === p2CardArray[1]
+    ) {
+      if (p1_kicker.val > p2_kicker.val) return 'p1';
+      if (p2_kicker.val > p1_kicker.val) return 'p2';
+    }
+  }
 
   return 'next';
 };
@@ -158,7 +1188,7 @@ const checkWinType = (winType, round) => {
   //if (winType === 'flush') winner = checkFlush(round);
   //if (winType === 'straight') winner = checkStraight(round);
   //if (winType === 'threeOfAKind') winner = checkThreeOfAKind(round);
-  //if (winType === 'twoPairs') winner = checkTwoPairs(round);
+  if (winType === 'twoPairs') winner = checkTwoPairs(round);
   if (winType === 'onePair') winner = checkOnePair(round);
   if (winType === 'highCard') winner = checkHighCard(round);
 
@@ -187,3 +1217,6 @@ const determineWin = (round) => {
 exports.syncReadFile = syncReadFile;
 exports.parseHandsForRound = parseHandsForRound;
 exports.determineWin = determineWin;
+exports.checkOnePair = checkOnePair;
+exports.checkTwoPairs = checkTwoPairs;
+exports.checkHighCard = checkHighCard;
