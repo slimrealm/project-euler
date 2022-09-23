@@ -1245,12 +1245,62 @@ const checkThreeOfAKind = (round) => {
   return 'next';
 };
 
+const checkFourOfAKind = (round) => {
+  let p1CardValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 2,3,4....Q,K,A
+  let p2CardValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 2,3,4....Q,K,A
+  let p1_4KindVal = 0;
+  let p2_4KindVal = 0;
+  let p1kicker = 0;
+  let p2kicker = 0;
+
+  // do algorithm
+  p1CardValues[round.p1Cards.c1.val - 2]++;
+  p1CardValues[round.p1Cards.c2.val - 2]++;
+  p1CardValues[round.p1Cards.c3.val - 2]++;
+  p1CardValues[round.p1Cards.c4.val - 2]++;
+  p1CardValues[round.p1Cards.c5.val - 2]++;
+
+  p2CardValues[round.p2Cards.c1.val - 2]++;
+  p2CardValues[round.p2Cards.c2.val - 2]++;
+  p2CardValues[round.p2Cards.c3.val - 2]++;
+  p2CardValues[round.p2Cards.c4.val - 2]++;
+  p2CardValues[round.p2Cards.c5.val - 2]++;
+
+  //console.log(p1CardValues);
+  //console.log(p2CardValues);
+
+  for (let i = 0; i <= 12; i++) {
+    if (p1CardValues[i] === 4) {
+      p1_4KindVal = i + 2;
+    }
+    if (p2CardValues[i] === 4) {
+      p2_4KindVal = i + 2;
+    }
+
+    if (p1CardValues[i] === 1) {
+      p1kicker = i + 2;
+    }
+    if (p2CardValues[i] === 1) {
+      p2kicker = i + 2;
+    }
+  }
+
+  if (p1_4KindVal > p2_4KindVal) return 'p1';
+  if (p2_4KindVal > p1_4KindVal) return 'p2';
+  if (p1_4KindVal === p2_4KindVal && p1_4KindVal !== 0) {
+    if (p1kicker > p2kicker) return 'p1';
+    if (p2kicker > p1kicker) return 'p2';
+  }
+
+  return 'next';
+};
+
 const checkWinType = (winType, round) => {
   let winner = 'next';
 
   //if (winType === 'royalFlush') winner = checkRoyalFlush(round);
   //if (winType === 'straightFlush') winner = checkStraightFlush(round);
-  //if (winType === 'fourOfAKind') winner = checkFourOfAKind(round);
+  if (winType === 'fourOfAKind') winner = checkFourOfAKind(round);
   //if (winType === 'fullHouse') winner = checkFullHouse(round);
   //if (winType === 'flush') winner = checkFlush(round);
   //if (winType === 'straight') winner = checkStraight(round);
@@ -1288,3 +1338,4 @@ exports.checkOnePair = checkOnePair;
 exports.checkTwoPairs = checkTwoPairs;
 exports.checkHighCard = checkHighCard;
 exports.checkThreeOfAKind = checkThreeOfAKind;
+exports.checkFourOfAKind = checkFourOfAKind;

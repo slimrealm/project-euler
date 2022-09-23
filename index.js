@@ -6,6 +6,7 @@ const {
   checkTwoPairs,
   checkHighCard,
   checkThreeOfAKind,
+  checkFourOfAKind,
 } = require('./problem-0054/functions_0054');
 
 const checkRoyalFlush = (parsedHand) => {
@@ -34,20 +35,20 @@ console.log('\n\nTESTS');
 
 testRound = {
   p1Cards: {
-    c1: { val: 6, suit: 'C' },
-    c2: { val: 8, suit: 'S' },
+    c1: { val: 3, suit: 'C' },
+    c2: { val: 12, suit: 'S' },
     c3: { val: 3, suit: 'D' },
     c4: { val: 3, suit: 'C' },
     c5: { val: 3, suit: 'H' },
   },
   p2Cards: {
-    c1: { val: 2, suit: 'H' },
-    c2: { val: 2, suit: 'C' },
-    c3: { val: 2, suit: 'D' },
-    c4: { val: 12, suit: 'S' },
-    c5: { val: 12, suit: 'C' },
+    c1: { val: 3, suit: 'H' },
+    c2: { val: 3, suit: 'C' },
+    c3: { val: 3, suit: 'D' },
+    c4: { val: 3, suit: 'S' },
+    c5: { val: 9, suit: 'C' },
   },
 };
 
-const testWinner = checkThreeOfAKind(testRound);
+const testWinner = checkFourOfAKind(testRound);
 console.log(testWinner);
