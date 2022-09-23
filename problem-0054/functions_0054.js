@@ -1391,34 +1391,32 @@ const checkFlush = (round) => {
   if (p1HasFlush && !p2HasFlush) return 'p1';
   if (p2HasFlush && !p1HasFlush) return 'p2';
   if (p1HasFlush && p2HasFlush) {
- MUST SORT, THEN COMPARE FROM HIGHEST DOWNWARD
+    QQQ MUST SORT, THEN COMPARE FROM HIGHEST DOWNWARD
   }
 
   return 'next';
 };
 
 const checkWinType = (winType, round) => {
-  let winner = 'next';
+  //if (winType === 'royalFlush') return checkRoyalFlush(round);
+  //if (winType === 'straightFlush') return checkStraightFlush(round);
+  if (winType === 'fourOfAKind') return checkFourOfAKind(round);
+  //if (winType === 'fullHouse') return checkFullHouse(round);
+  if (winType === 'flush') return checkFlush(round);
+  if (winType === 'straight') return checkStraight(round);
+  if (winType === 'threeOfAKind') return checkThreeOfAKind(round);
+  if (winType === 'twoPairs') return checkTwoPairs(round);
+  if (winType === 'onePair') return checkOnePair(round);
+  if (winType === 'highCard') return checkHighCard(round);
 
-  //if (winType === 'royalFlush') winner = checkRoyalFlush(round);
-  //if (winType === 'straightFlush') winner = checkStraightFlush(round);
-  if (winType === 'fourOfAKind') winner = checkFourOfAKind(round);
-  //if (winType === 'fullHouse') winner = checkFullHouse(round);
-  if (winType === 'flush') winner = checkFlush(round);
-  if (winType === 'straight') winner = checkStraight(round);
-  if (winType === 'threeOfAKind') winner = checkThreeOfAKind(round);
-  if (winType === 'twoPairs') winner = checkTwoPairs(round);
-  if (winType === 'onePair') winner = checkOnePair(round);
-  if (winType === 'highCard') winner = checkHighCard(round);
-
-  return winner; // or 'p2' or 'next'
+  return 'next';
 };
 
 const determineWin = (round) => {
   let determinedResult = false;
   let winner = 'next';
 
-  winner = checkWinType('royalFlush');
+  winner = checkWinType('royalFlush', round);
   if (winner === 'next') winner = checkWinType('straightFlush', round);
   if (winner === 'next') winner = checkWinType('fourOfAKind', round);
   if (winner === 'next') winner = checkWinType('fullHouse', round);
