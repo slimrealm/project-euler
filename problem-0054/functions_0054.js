@@ -1391,7 +1391,123 @@ const checkFlush = (round) => {
   if (p1HasFlush && !p2HasFlush) return 'p1';
   if (p2HasFlush && !p1HasFlush) return 'p2';
   if (p1HasFlush && p2HasFlush) {
-    QQQ MUST SORT, THEN COMPARE FROM HIGHEST DOWNWARD
+    p1CardValues = [
+      round.p1Cards.c1.val,
+      round.p1Cards.c2.val,
+      round.p1Cards.c3.val,
+      round.p1Cards.c4.val,
+      round.p1Cards.c5.val,
+    ];
+    p2CardValues = [
+      round.p2Cards.c1.val,
+      round.p2Cards.c2.val,
+      round.p2Cards.c3.val,
+      round.p2Cards.c4.val,
+      round.p2Cards.c5.val,
+    ];
+
+
+    p1CardValues.sort((a, b) => a - b);
+    p2CardValues.sort((a, b) => a - b);
+
+    for (let i = 4; i >= 0; i--){
+      if (p1CardValues[i] > p2CardValues[i]) return 'p1';
+      if (p2CardValues[i] > p1CardValues[i]) return 'p2';
+    }
+  }
+
+  return 'next';
+};
+
+const checkStraightFlush = (round) => {
+  let p1HasFlush = false;
+  let p2HasFlush = false;
+
+  const p1Cards = [
+    round.p1Cards.c1,
+    round.p1Cards.c2,
+    round.p1Cards.c3,
+    round.p1Cards.c4,
+    round.p1Cards.c5,
+  ];
+
+  if (
+    p1Cards[0].suit === p1Cards[1].suit &&
+    p1Cards[0].suit === p1Cards[2].suit &&
+    p1Cards[0].suit === p1Cards[3].suit &&
+    p1Cards[0].suit === p1Cards[4].suit
+  ) {
+    p1HasFlush = true;
+  }
+
+  const p2Cards = [
+    round.p2Cards.c1,
+    round.p2Cards.c2,
+    round.p2Cards.c3,
+    round.p2Cards.c4,
+    round.p2Cards.c5,
+  ];
+
+  if (
+    p2Cards[0].suit === p2Cards[1].suit &&
+    p2Cards[0].suit === p2Cards[2].suit &&
+    p2Cards[0].suit === p2Cards[3].suit &&
+    p2Cards[0].suit === p2Cards[4].suit
+  ) {
+    p2HasFlush = true;
+  }
+
+  if (!p1HasFlush && !p2HasFlush) return 'next'
+
+  p1CardValues = [
+    round.p1Cards.c1.val,
+    round.p1Cards.c2.val,
+    round.p1Cards.c3.val,
+    round.p1Cards.c4.val,
+    round.p1Cards.c5.val,
+  ];
+  p2CardValues = [
+    round.p2Cards.c1.val,
+    round.p2Cards.c2.val,
+    round.p2Cards.c3.val,
+    round.p2Cards.c4.val,
+    round.p2Cards.c5.val,
+  ];
+
+
+  p1CardValues.sort((a, b) => a - b);
+  p2CardValues.sort((a, b) => a - b);
+
+
+  let p1HasStraightFlush = false;
+  let p2HasStraightFlush = false;
+
+
+  if (p1HasFlush) {
+    if (p1CardValues[0] + 1 === p1CardValues[1] &&
+      p1CardValues[0] + 2 === p1CardValues[2] &&
+      p1CardValues[0] + 3 === p1CardValues[3] &&
+      p1CardValues[0] + 4 === p1CardValues[4]
+    ) {
+      p1HasStraightFlush = true;
+    }
+  }
+
+  if (p2HasFlush) {
+    if (p2CardValues[0] + 1 === p2CardValues[1] &&
+      p2CardValues[0] + 2 === p2CardValues[2] &&
+      p2CardValues[0] + 3 === p2CardValues[3] &&
+      p2CardValues[0] + 4 === p2CardValues[4]
+    ) {
+      p2HasStraightFlush = true;
+    }
+  }
+
+  if (p1HasStraightFlush && !p2HasStraightFlush) return 'p1';
+  if (p2HasStraightFlush && !p1HasStraightFlush) return 'p2';
+  if (p2HasStraightFlush && p1HasStraightFlush) {
+    if (p1CardValues[4] > p2CardValues[4]) return 'p1';
+    if (p2CardValues[4] > p1CardValues[4]) return 'p2';
   }
 
   return 'next';
@@ -1399,7 +1515,7 @@ const checkFlush = (round) => {
 
 const checkWinType = (winType, round) => {
   //if (winType === 'royalFlush') return checkRoyalFlush(round);
-  //if (winType === 'straightFlush') return checkStraightFlush(round);
+  if (winType === 'straightFlush') return checkStraightFlush(round);
   if (winType === 'fourOfAKind') return checkFourOfAKind(round);
   //if (winType === 'fullHouse') return checkFullHouse(round);
   if (winType === 'flush') return checkFlush(round);
@@ -1441,3 +1557,4 @@ exports.checkThreeOfAKind = checkThreeOfAKind;
 exports.checkFourOfAKind = checkFourOfAKind;
 exports.checkStraight = checkStraight;
 exports.checkFlush = checkFlush;
+exports.checkStraightFlush = checkStraightFlush;

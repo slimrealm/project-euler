@@ -9,6 +9,7 @@ const {
   checkFourOfAKind,
   checkStraight,
   checkFlush,
+  checkStraightFlush
 } = require('./problem-0054/functions_0054');
 
 const checkRoyalFlush = (parsedHand) => {
@@ -37,20 +38,20 @@ console.log('\n\nTESTS');
 
 testRound = {
   p1Cards: {
-    c1: { val: 8, suit: 'C' },
-    c2: { val: 7, suit: 'C' },
-    c3: { val: 9, suit: 'C' },
-    c4: { val: 6, suit: 'C' },
-    c5: { val: 5, suit: 'C' },
+    c1: { val: 4, suit: 'C' },
+    c2: { val: 5, suit: 'C' },
+    c3: { val: 6, suit: 'C' },
+    c4: { val: 7, suit: 'C' },
+    c5: { val: 8, suit: 'C' },
   },
   p2Cards: {
     c1: { val: 7, suit: 'H' },
-    c2: { val: 6, suit: 'H' },
-    c3: { val: 5, suit: 'H' },
-    c4: { val: 11, suit: 'H' },
-    c5: { val: 8, suit: 'H' },
+    c2: { val: 8, suit: 'H' },
+    c3: { val: 4, suit: 'H' },
+    c4: { val: 5, suit: 'C' },
+    c5: { val: 6, suit: 'H' },
   },
 };
 
-const testWinner = checkFlush(testRound);
+const testWinner = checkStraightFlush(testRound);
 console.log(testWinner);
