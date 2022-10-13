@@ -1513,8 +1513,100 @@ const checkStraightFlush = (round) => {
   return 'next';
 };
 
+const checkRoyalFlush = (round) => {
+  let p1HasFlush = false;
+  let p2HasFlush = false;
+
+  const p1Cards = [
+    round.p1Cards.c1,
+    round.p1Cards.c2,
+    round.p1Cards.c3,
+    round.p1Cards.c4,
+    round.p1Cards.c5,
+  ];
+
+  if (
+    p1Cards[0].suit === p1Cards[1].suit &&
+    p1Cards[0].suit === p1Cards[2].suit &&
+    p1Cards[0].suit === p1Cards[3].suit &&
+    p1Cards[0].suit === p1Cards[4].suit
+  ) {
+    p1HasFlush = true;
+  }
+
+  const p2Cards = [
+    round.p2Cards.c1,
+    round.p2Cards.c2,
+    round.p2Cards.c3,
+    round.p2Cards.c4,
+    round.p2Cards.c5,
+  ];
+
+  if (
+    p2Cards[0].suit === p2Cards[1].suit &&
+    p2Cards[0].suit === p2Cards[2].suit &&
+    p2Cards[0].suit === p2Cards[3].suit &&
+    p2Cards[0].suit === p2Cards[4].suit
+  ) {
+    p2HasFlush = true;
+  }
+
+  if (!p1HasFlush && !p2HasFlush) return 'next'
+
+  p1CardValues = [
+    round.p1Cards.c1.val,
+    round.p1Cards.c2.val,
+    round.p1Cards.c3.val,
+    round.p1Cards.c4.val,
+    round.p1Cards.c5.val,
+  ];
+  p2CardValues = [
+    round.p2Cards.c1.val,
+    round.p2Cards.c2.val,
+    round.p2Cards.c3.val,
+    round.p2Cards.c4.val,
+    round.p2Cards.c5.val,
+  ];
+
+
+  p1CardValues.sort((a, b) => a - b);
+  p2CardValues.sort((a, b) => a - b);
+
+
+  let p1HasRoyalFlush = false;
+  let p2HasRoyalFlush = false;
+
+
+  if (p1HasFlush) {
+    if (p1CardValues[0] === 10 &&
+      p1CardValues[1] === 11 &&
+      p1CardValues[2] === 12 &&
+      p1CardValues[3] === 13 &&
+      p1CardValues[4] === 14 
+      ) {
+      p1HasRoyalFlush = true;
+    }
+  }
+
+  if (p2HasFlush) {
+    if (p2CardValues[0] === 10 &&
+      p2CardValues[1] === 11 &&
+      p2CardValues[2] === 12 &&
+      p2CardValues[3] === 13 &&
+      p2CardValues[4] === 14 
+      ) {
+      p2HasRoyalFlush = true;
+    }
+  }
+
+  if (p1HasRoyalFlush && !p2HasRoyalFlush) return 'p1';
+  if (p2HasRoyalFlush && !p1HasRoyalFlush) return 'p2';
+
+  return 'next';
+};
+
 const checkWinType = (winType, round) => {
-  //if (winType === 'royalFlush') return checkRoyalFlush(round);
+  if (winType === 'royalFlush') return checkRoyalFlush(round);
   if (winType === 'straightFlush') return checkStraightFlush(round);
   if (winType === 'fourOfAKind') return checkFourOfAKind(round);
   //if (winType === 'fullHouse') return checkFullHouse(round);
@@ -1558,3 +1650,4 @@ exports.checkFourOfAKind = checkFourOfAKind;
 exports.checkStraight = checkStraight;
 exports.checkFlush = checkFlush;
 exports.checkStraightFlush = checkStraightFlush;
+exports.checkRoyalFlush = checkRoyalFlush;
