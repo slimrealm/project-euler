@@ -1605,11 +1605,71 @@ const checkRoyalFlush = (round) => {
   return 'next';
 };
 
+const checkFullHouse = (round) => {
+  p1CardValues = [
+    round.p1Cards.c1.val,
+    round.p1Cards.c2.val,
+    round.p1Cards.c3.val,
+    round.p1Cards.c4.val,
+    round.p1Cards.c5.val,
+  ];
+  p2CardValues = [
+    round.p2Cards.c1.val,
+    round.p2Cards.c2.val,
+    round.p2Cards.c3.val,
+    round.p2Cards.c4.val,
+    round.p2Cards.c5.val,
+  ];
+
+  p1CardValues.sort((a, b) => a - b);
+  p2CardValues.sort((a, b) => a - b);
+
+// find doubles and triples
+let p1FullHouse = false;
+let p1DoubleVal = 0;
+let p1TripleVal = 0;
+if (p1CardValues[0] === p1CardValues[1] && p1CardValues[0] === p1CardValues[2] && p1CardValues[3] === p1CardValues[4]) {
+  p1DoubleVal = p1CardValues[3];
+  p1TripleVal = p1CardValues[0];
+  p1FullHouse = true;
+}
+if (p1CardValues[2] === p1CardValues[3] && p1CardValues[2] === p1CardValues[4] && p1CardValues[0] === p1CardValues[1]) {
+  p1DoubleVal = p1CardValues[0];
+  p1TripleVal = p1CardValues[3];
+  p1FullHouse = true;
+}
+
+let p2FullHouse = false;
+let p2DoubleVal = 0;
+let p2TripleVal = 0;
+if (p2CardValues[0] === p2CardValues[1] && p2CardValues[0] === p2CardValues[2] && p2CardValues[3] === p2CardValues[4]) {
+  p2DoubleVal = p2CardValues[3];
+  p2TripleVal = p2CardValues[0];
+  p2FullHouse = true;
+}
+if (p2CardValues[2] === p2CardValues[3] && p2CardValues[2] === p2CardValues[4] && p2CardValues[0] === p2CardValues[1]) {
+  p2DoubleVal = p2CardValues[0];
+  p2TripleVal = p2CardValues[3];
+  p2FullHouse = true;
+}
+
+if (p1FullHouse && !p2FullHouse) return 'p1';
+if (p2FullHouse && !p1FullHouse) return 'p2';
+if (p1FullHouse && p2FullHouse) {
+  if (p1TripleVal > p2TripleVal) return 'p1';
+  if (p2TripleVal > p1TripleVal) return 'p2';
+  if (p1DoubleVal > p2DoubleVal) return 'p1';
+  if (p2DoubleVal > p1DoubleVal) return 'p2';
+};
+
+  return 'next'
+}
+
 const checkWinType = (winType, round) => {
   if (winType === 'royalFlush') return checkRoyalFlush(round);
   if (winType === 'straightFlush') return checkStraightFlush(round);
   if (winType === 'fourOfAKind') return checkFourOfAKind(round);
-  //if (winType === 'fullHouse') return checkFullHouse(round);
+  if (winType === 'fullHouse') return checkFullHouse(round);
   if (winType === 'flush') return checkFlush(round);
   if (winType === 'straight') return checkStraight(round);
   if (winType === 'threeOfAKind') return checkThreeOfAKind(round);
@@ -1651,3 +1711,4 @@ exports.checkStraight = checkStraight;
 exports.checkFlush = checkFlush;
 exports.checkStraightFlush = checkStraightFlush;
 exports.checkRoyalFlush = checkRoyalFlush;
+exports.checkFullHouse = checkFullHouse;
